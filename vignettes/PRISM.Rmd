@@ -1,0 +1,79 @@
+---
+title: "iPRISM User Guide"
+output: 
+  html_document:
+    df_print: paged
+    toc: yes
+  pdf_document:
+    toc: yes
+  prettydoc::html_pretty:
+    highlight: github
+    theme: cayman
+vignette: >
+  %\VignetteIndexEntry{iPRISM User Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+# Load the package
+library(iPRISM)
+```
+
+## Introduction
+
+Welcome to the vignette for the **PRISM** package. This document provides an overview of the package's functionalities, including basic usage examples and detailed explanations of the main functions. The **PRISM** package includes the core function for the paper named *PRISM: Predicting Response to cancer Immunotherapy through Systematic Modeling*.
+
+## Example 1: Correlation Plot with Cell Types and Pathways
+
+The `cor_plot` function generates a correlation plot between cell types and pathways, displaying correlation coefficients as a heatmap and significant correlations as scatter points.
+
+```{r}
+# Read cell line and pathway information
+data(data.path, package = "iPRISM")
+data(data.cell, package = "iPRISM")
+
+# Draw the plot
+cor_plot(data1 = data.path, data2 = data.cell, sig.name1 = "path", sig.name2 = "cell")
+```
+
+## Example 2: Enrichment Analysis using Multiplex Networks
+
+The `get_gsea_path` function constructs a multiplex network, performs random walk restart, and calculates gene scores. It then transforms the scores and applies GSEA using the provided gene sets.
+
+```{r}
+# Load example data
+data(Seeds, package = "iPRISM")
+data(ppi, package = "iPRISM")
+data(path_list, package = "iPRISM")
+
+# Shrink pathway list to the top 2 pathways
+path_list <- path_list[1:5]
+
+# Perform GSEA
+result <- get_gsea_path(seed = Seeds, network = ppi, pathlist = path_list, gsea.nperm = 100)
+print(result)
+```
+
+## Example 3: Fit Logistic Regression Model
+
+The `get_logiModel` function fits a logistic regression model as the paper highlighted, with an option for stepwise model selection.
+
+```{r}
+# Load example data
+data(data_sig, package = "iPRISM")
+
+# Fit logistic regression model
+b <- get_logiModel(data.sig = data_sig, pred.value = pred_value, step = TRUE)
+summary(b)
+```
+
+
+
